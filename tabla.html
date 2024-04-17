@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla JSON</title>
+    <style>
+        table, th,td{
+            border: 2px solid grey;
+            border-collapse:collapse;
+        }
+    </style>
+</head>
+<body>
+    <button id="boton">Cargar Tabla</button>
+    <div id="contenedorTabla"></div>
+<script>
+    document.getElementById("boton").onclick = CargaTabla;
+
+function CargaTabla(){
+    fetch('tablaDatos.json')
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('No se pudo cargar el archivo JSON.');
+        }
+        return response.json(); // Convertimos la respuesta a JSON
+    })
+    .then(function(data) {
+        let tabla = document.createElement("table");
+
+        for(let objeto of data.tablaDatos){
+            let fila = document.createElement("tr");
+
+            let celdaModelo = document.createElement("td");
+            celdaModelo.innerHTML = objeto.modelo;
+
+            let celdaColor = document.createElement("td");
+            celdaColor.innerHTML = objeto.color;
+
+            let celdaAlmacenamiento = document.createElement("td");
+            celdaAlmacenamiento.innerHTML = objeto.almacenamiento;
+
+            let celdaRam= document.createElement("td");
+            celdaRam.innerHTML = objeto.ram;
+
+            let celdaNumeros = document.createElement("td");
+            celdaNumeros.innerHTML = objeto['numeros-comprador'];
+
+            let celdaValoraciones = document.createElement("td");
+            let listaValoraciones = document.createElement("ul"); 
+            
+            for(let i = 0; i < objeto.valoraciones.length; i++) {
+                let liValoraciones = document.createElement("li"); 
+                liValoraciones.textContent = objeto.valoraciones[i]; 
+                listaValoraciones.appendChild(liValoraciones);
+            }
+            celdaValoraciones.appendChild(listaValoraciones);
+
+            let celdaFecha = document.createElement("td");
+            celdaFecha.innerHTML = objeto.fecha;
+
+            fila.appendChild(celdaModelo);
+            fila.appendChild(celdaColor);
+            fila.appendChild(celdaAlmacenamiento);
+            fila.appendChild(celdaRam);
+            fila.appendChild(celdaNumeros);
+            fila.appendChild(celdaValoraciones);
+            fila.appendChild(celdaFecha);
+            
+            tabla.appendChild(fila);
+        }
+        let contenedorTabla = document.getElementById("contenedorTabla");
+        contenedorTabla.appendChild(tabla);
+    })
+    .catch(function(error) {
+        console.error('Se produjo un error al cargar el archivo JSON:', error);
+    });
+}
+
+    
+</script>
+</body>
+</html>
